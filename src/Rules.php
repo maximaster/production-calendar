@@ -34,7 +34,7 @@ class Rules
     /**
      * Список всех типов
      */
-    const TYPES = [self::UNKNOWN, self::REGULAR, self::REGULAR_REST, self::HOLIDAY, self::PRE_HOLIDAY];
+    public static $TYPES = [self::UNKNOWN, self::REGULAR, self::REGULAR_REST, self::HOLIDAY, self::PRE_HOLIDAY];
 
     /**
      * @var array Список дней и их типов. Формат [год][месяц][день] = тип
@@ -53,7 +53,7 @@ class Rules
      */
     public static function isCorrectType($type)
     {
-        return in_array($type, self::TYPES);
+        return in_array($type, self::$TYPES);
     }
 
     /**

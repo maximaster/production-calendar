@@ -19,7 +19,7 @@ class CacheProviderTest extends \PHPUnit_Framework_TestCase
         /**
          * @var BasicdataProvider|PHPUnit_Framework_MockObject_MockObject $mock
          */
-        $mock = $this->getMock(BasicdataProvider::class);
+        $mock = $this->getMock('Maximaster\ProductionCalendar\RulesProvider\BasicdataProvider');
         $mock
             ->method('get')
             ->will($this->returnCallback(function () use (&$cnt) {

@@ -17,20 +17,20 @@ class BasicdataProvider implements ProviderInterface
     /**
      * Соответствие значений сервиса, внутренним значениям класса Rules
      */
-    const RULES_MAPPING = [
+    protected $rulesMapping = [
         0 => Rules::REGULAR,
         2 => Rules::HOLIDAY,
         3 => Rules::PRE_HOLIDAY,
     ];
 
-    const DEFAULT_CURLOPTS = [
+    public static $defaultCurlOpts = [
         CURLOPT_TIMEOUT => 1,
         CURLOPT_CONNECTTIMEOUT => 1,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_FAILONERROR => true,
     ];
 
-    protected $curlOpts = self::DEFAULT_CURLOPTS;
+    protected $curlOpts = [];
 
     protected $apiData = [];
 
@@ -45,7 +45,7 @@ class BasicdataProvider implements ProviderInterface
         foreach ($data as $year => $yearMonths) {
             foreach ($yearMonths as $month => $days) {
                 foreach ($days as $dayNum => $day) {
-                    $rules->addDay($year, $month, $dayNum, self::RULES_MAPPING[ $day['isWorking'] ]);
+                    $rules->addDay($year, $month, $dayNum, $this->rulesMapping[ $day['isWorking'] ]);
                 }
             }
         }
@@ -105,6 +105,6 @@ class BasicdataProvider implements ProviderInterface
      */
     public function __construct(ProviderInterface $parentProvider = null)
     {
-        // nop
+        $this->curlOpts = self::$defaultCurlOpts;
     }
 }
