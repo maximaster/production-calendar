@@ -9,7 +9,9 @@
 composer require maximaster/production-calendar
 ```
 
-# Использование
+# Примеры использования
+
+Для полного списка доступных функций обратитесь к phpDoc пубичных методов класса Calendar.
 
 ## isFree($day)
 Проверяет, является ли день "свободным", т.е. либо праздником, либо рядовым выходным
@@ -32,6 +34,13 @@ if ($calendar->isDay('01.01.2017', [Rules::HOLIDAY, Rules::PRE_HOLIDAY])) {
 Возвращает тип дня
 ```php
 $calendar->getDayType('01.01.2017'); // Rules::REGULAR_REST
+```
+
+## getMonthWorkDaysCount($year, $month)
+## getMonthWorkDaysCount($dayOfMonth)
+Возвращает количество рабочих дней в указанном месяце
+```php
+$calendar->getMonthWorkDaysCount(2017, 6); // 21
 ```
 
 # Кеширование

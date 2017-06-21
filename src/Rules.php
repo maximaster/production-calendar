@@ -36,6 +36,9 @@ class Rules
      */
     public static $TYPES = [self::UNKNOWN, self::REGULAR, self::REGULAR_REST, self::HOLIDAY, self::PRE_HOLIDAY];
 
+    public static $FREE = [self::REGULAR_REST, self::HOLIDAY];
+    public static $WORK = [self::REGULAR, self::PRE_HOLIDAY];
+
     /**
      * @var array Список дней и их типов. Формат [год][месяц][день] = тип
      */

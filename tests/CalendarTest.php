@@ -2,6 +2,7 @@
 
 namespace Maximaster\ProductionCalendar\Test;
 
+use DateTime;
 use Maximaster\ProductionCalendar\Calendar;
 use Maximaster\ProductionCalendar\Rules;
 use Maximaster\ProductionCalendar\RulesProvider\BasicdataProvider;
@@ -100,6 +101,131 @@ class CalendarTest extends \PHPUnit_Framework_TestCase
     public function testGetDayType($day, $expected)
     {
         $this->assertSame($expected, $this->calendar->getDayType($day));
+    }
+
+    /**
+     * @return array Data for testGetFreeDays
+     */
+    public function getDaysProvider()
+    {
+        return [
+            [
+                Rules::$FREE,
+                new DateTime('06.01.2017'),
+                new DateTime('15.01.2017'),
+                [
+                    new DateTime('06.01.2017'),
+                    new DateTime('07.01.2017'),
+                    new DateTime('08.01.2017'),
+                    new DateTime('14.01.2017'),
+                    new DateTime('15.01.2017'),
+                ]
+            ],
+            [
+                Rules::$FREE,
+                new DateTime('06.03.2017'),
+                new DateTime('12.03.2017'),
+                [
+                    new DateTime('08.03.2017'),
+                    new DateTime('11.03.2017'),
+                    new DateTime('12.03.2017'),
+                ]
+            ],
+        ];
+    }
+
+    /**
+     * @param int|int[] $types
+     * @param DateTime $from
+     * @param DateTime $to
+     * @param DateTime[] $expected
+     * @dataProvider getDaysProvider
+     */
+    public function testGetDays($types, DateTime $from, DateTime $to, $expected)
+    {
+        $this->assertEquals($expected, $this->calendar->getDays($types, $from, $to));
+    }
+
+    /**
+     * @return array Data for testGetMonthFreeDays
+     */
+    public function getMonthDaysProvider()
+    {
+        $expected0317 = [
+            new DateTime('04.03.2017'),
+            new DateTime('05.03.2017'),
+            new DateTime('08.03.2017'),
+            new DateTime('11.03.2017'),
+            new DateTime('12.03.2017'),
+            new DateTime('18.03.2017'),
+            new DateTime('19.03.2017'),
+            new DateTime('25.03.2017'),
+            new DateTime('26.03.2017'),
+        ];
+
+        return [
+            [Rules::$FREE, 2017, 03, $expected0317],
+            [Rules::$FREE, new DateTime('05.03.2017 13:55'), null, $expected0317],
+        ];
+    }
+
+    /**
+     * @param int|int[] $types
+     * @param int|DateTime $year
+     * @param int|null $month
+     * @param DateTime[] $expected
+     * @dataProvider getMonthDaysProvider
+     */
+    public function testGetMonthDays($types, $year, $month, $expected)
+    {
+        $this->assertEquals($expected, $this->calendar->getMonthDays($types, $year, $month));
+    }
+
+    /**
+     * @return array Data for testGetMonthDaysCount
+     */
+    public function getMonthDaysCountProvider()
+    {
+        return [
+            [Rules::$FREE, 2017, 3, 9],
+            [Rules::$WORK, 2017, 3, 22],
+            [Rules::$WORK, new DateTime('01.04.2017'), null, 20],
+        ];
+    }
+
+    /**
+     * @param $types
+     * @param $year
+     * @param $month
+     * @param $expected
+     * @dataProvider getMonthDaysCountProvider
+     */
+    public function testGetMonthDaysCount($types, $year, $month, $expected)
+    {
+        $this->assertEquals($expected, $this->calendar->getMonthDaysCount($types, $year, $month));
+    }
+
+    /**
+     * @return array Data for testGetMonthWorkDaysCount
+     */
+    public function getMonthWorkDaysCountProvider()
+    {
+        return [
+            [2017, 03, 22],
+            [2017, 06, 21],
+            [2017, 07, 21],
+        ];
+    }
+
+    /**
+     * @param int|DateTime $year
+     * @param int|null $month
+     * @param int $expected
+     * @dataProvider getMonthWorkDaysCountProvider
+     */
+    public function testGetMonthWorkDaysCount($year, $month, $expected)
+    {
+        $this->assertEquals($expected, $this->calendar->getMonthWorkDaysCount($year, $month));
     }
 
     /**
