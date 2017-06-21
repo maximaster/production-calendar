@@ -229,6 +229,25 @@ class CalendarTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Проверяет ошибку из-за которой входные данные могут быть испорчены
+     */
+    public function testInputDateTimePersistance()
+    {
+        $day = new DateTime;
+        $day->setTime(10, 10);
+        $originalDay = clone $day;
+
+        $this->calendar->getMonthWorkDaysCount($day);
+        $this->assertEquals($originalDay, $day);
+
+        $this->calendar->isRegularRestDay($day);
+        $this->assertEquals($originalDay, $day);
+
+        $this->calendar->getDays(Rules::$WORK, $day, $day);
+        $this->assertEquals($originalDay, $day);
+    }
+
+    /**
      * Обобщает методику проверки методов принимающих на вход только день, и возвращающих нечто, что надо проверить
      * @param string $method
      * @param string $day

@@ -110,22 +110,25 @@ class Calendar
     public function getDays($types, DateTime $from, DateTime $to)
     {
         // Убираем время, может помешать в сравнениях
-        $dates = [$to, $from];
-        foreach ($dates as $date) {
+        $range = ['from' => clone $from, 'to' => clone $to];
+        foreach ($range as $date) {
             $date->setTime(0, 0);
         }
 
+        // Убираем ссылку на входные данные чтобы их не повредить
+        unset($from, $to);
+
         // Т.к. формулировка метода "между двумя датами", лояльно отнесёмся к перепутанным местами датам
-        if ($from > $to) {
-            list($from, $to) = $dates;
+        if ($range['from'] > $range['to']) {
+            list($range['to'], $range['from']) = array_values($range);
         }
 
         $days = [];
         do {
-            if ($this->isDay($from, $types)) {
-                $days[] = clone $from;
+            if ($this->isDay($range['from'], $types)) {
+                $days[] = clone $range['from'];
             }
-        } while ($from->add(new DateInterval('P1D')) <= $to);
+        } while ($range['from']->add(new DateInterval('P1D')) <= $range['to']);
 
         return $days;
     }
@@ -140,7 +143,7 @@ class Calendar
      */
     public function getMonthDays($types, $year, $month = null)
     {
-        $monthDay = $year instanceof DateTime ? $year : (new DateTime)->setDate($year, $month, 1);
+        $monthDay = $year instanceof DateTime ? clone $year : (new DateTime)->setDate($year, $month, 1);
         $monthDay->setTime(0, 0);
         return $this->getDays(
             $types,
