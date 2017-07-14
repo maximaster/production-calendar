@@ -83,16 +83,17 @@ class BasicdataProvider implements ProviderInterface
         $ch = curl_init(self::URL);
         curl_setopt_array($ch, $this->curlOpts);
 
-        $response = curl_exec($ch);
-        if (!$response) {
+        $rawResponse = $response = curl_exec($ch);
+        if ($response === false) {
+            $errMsg = curl_error($ch);
             curl_close($ch);
-            throw new Exception("curl fails: ".curl_error($ch));
+            throw new Exception("curl fails: {$errMsg}");
         }
 
         $response = json_decode($response, true);
         if (!is_array($response) || !isset($response['data'])) {
             curl_close($ch);
-            throw new Exception("wrong response: ".var_export($response, true));
+            throw new Exception("wrong response: `{$rawResponse}`");
         }
 
         curl_close($ch);

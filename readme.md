@@ -50,4 +50,26 @@ Calendar::fromProvider(new CacheProvider(new BasicdataProvider));
 ```
 Для использования необходимо подключить пакет desarrolla2/cache
 
-[basicdata.ru]:basicdata.ru
+# Использование как сервиса в Symfony (2.8)
+app/config/services.yml
+```yml
+  app.calendar.basicdata_provider:
+    public: false
+    class: Maximaster\ProductionCalendar\RulesProvider\BasicdataProvider
+
+  app.calendar.cached_basicdata_provider:
+    public: false
+    class: Maximaster\ProductionCalendar\RulesProvider\CacheProvider
+    arguments: ["@app.calendar.basicdata_provider"]
+
+  app.calendar:
+    class: Maximaster\ProductionCalendar\Calendar
+    factory: ['Maximaster\ProductionCalendar\Calendar', fromProvider]
+    arguments: ["@app.calendar.cached_basicdata_provider"]
+```
+любой код с доступом к контейнеру
+```php
+$calendar = $this->getContainer()->get('app.calendar');
+```
+
+[basicdata.ru]:http://basicdata.ru
